@@ -1,0 +1,66 @@
+# dsp_regdef for PERSITE_FILTERS
+# NB: use spaces
+#123456789012
+MOD_ID           0x0000 0xffffffff rw %08x
+CTRL             0x0004 0xffffffff rw %08x
+CTRL.MOD_EN      0x0004 0x00000001 rw %d
+CTRL.DSP_RESET   0x0004 0x00000008 rw %d
+CTRL.EN          0x0004 0x00000010 rw %d
+CTRL.DSP_BYPASS  0x0004 0x00000020 rw %d
+CTRL.AUTO_RESET  0x0004 0x00000080 rw %d
+STA              0x0008 0xffffffff rw %08x
+
+cd 1
+ffir_coeff	0x100	0x00ffffff rw %d
+ffir_status	0x104	0xffffffff rw %08x
+ffir_bist	0x104   0x80000000 rw %d
+ffir_reset 	0x104   0x01000000 rw %d
+ffir_counter	0x104	0x007f0000 rw %d
+ffir_status	0x104   0x0000ffff rw %04x
+cd ..
+
+cd 2
+ffir_coeff	0x110	0x00ffffff rw %d
+ffir_status	0x114	0xffffffff rw %08x
+ffir_bist	0x114   0x80000000 rw %d
+ffir_reset 	0x114   0x01000000 rw %d
+ffir_counter	0x114	0x007f0000 rw %d
+ffir_status	0x114   0x0000ffff rw %04x
+cd ..
+
+
+cd 3
+ffir_coeff	0x120	0x00ffffff rw %d
+ffir_status	0x124	0xffffffff rw %08x
+ffir_bist	0x124   0x80000000 rw %d
+ffir_reset 	0x124   0x01000000 rw %d
+ffir_counter	0x124	0x007f0000 rw %d
+ffir_status	0x124   0x0000ffff rw %04x
+cd ..
+
+cd 4
+ffir_coeff	0x130	0x00ffffff rw %d
+ffir_status	0x134	0xffffffff rw %08x
+ffir_bist	0x134   0x80000000 rw %d
+ffir_reset 	0x134   0x01000000 rw %d
+ffir_counter	0x134	0x007f0000 rw %d
+ffir_status	0x134   0x0000ffff rw %04x
+cd ..
+
+cd 5
+ffir_coeff	0x140	0x00ffffff rw %d
+ffir_status	0x144	0xffffffff rw %08x
+ffir_bist	0x144   0x80000000 rw %d
+ffir_reset 	0x144   0x01000000 rw %d
+ffir_counter	0x144	0x007f0000 rw %d
+ffir_status	0x144   0x0000ffff rw %04x
+cd ..
+
+cd 6
+ffir_coeff	0x150	0x00ffffff rw %d
+ffir_status	0x154	0xffffffff rw %08x
+ffir_bist	0x154   0x80000000 rw %d
+ffir_reset 	0x154   0x01000000 rw %d
+ffir_counter	0x154	0x007f0000 rw %d
+ffir_status	0x154   0x0000ffff rw %04x
+cd ..

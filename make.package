@@ -1,0 +1,19 @@
+#!/bin/bash
+# BOLODSP DSP support for BOLO8
+DC=$(date +%y%m%d%H%M)
+SEQ=35
+PKG=custom_persite_filters
+PACKAGES=../../PACKAGES.OPT
+
+rm -Rf opkg/*
+mkdir -p opkg release
+
+cp -a usr opkg
+cp README opkg/usr/local/init/$PKG.README
+
+
+tar cvzf release/${SEQ}-${PKG}-${DC}.tgz -C opkg .
+ls -l release/${SEQ}-${PKG}-${DC}.tgz
+rm -f ${PACKAGES}/${SEQ}-${PKG}*
+cp release/${SEQ}-${PKG}-${DC}.tgz ${PACKAGES}
+

@@ -1,0 +1,28 @@
+#!/bin/sh
+
+/usr/local/CARE/acq400_dspfs.init
+
+cat /usr/local/CARE/CUSTOM_PERSITE_FILTERS/custom_persite_filters-regdef > /dev/dsp1/.create
+
+mkdir /etc/acq400/14/
+ln -s /dev/dsp1/* /etc/acq400/14/
+
+for SITE in 1 2 3 4 5 6; do
+	KDIR=/etc/acq400/$SITE
+	if [ -d $KDIR ] && [ -e $KDIR/is_adc ]; then
+		is_adc=$(cat $KDIR/is_adc|cut -c1)
+		if [ $is_adc -eq 1 ]; then
+			for knob in /dev/dsp1/$SITE/*; do
+				# remove me .. testing on ACQ480
+				[ -e $KDIR/$(basename $knob) ] && rm $KDIR/$(basename $knob)
+				ln -s $knob $KDIR
+			done
+		fi
+	fi
+done
+
+
+/usr/local/bin/monitor_dsp1 2>&1 >/dev/null  &
+
+echo "DSP site 14 active on 4234"
+

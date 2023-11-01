@@ -1,0 +1,66 @@
+#!/bin/sh
+
+DEVK=PERSITE_FILTERS
+DIR=/dev/dsp1/
+
+#httpd doesn't like names with periods..
+XMLNAME=$DEV
+
+cCrR() {
+cat - <<EOF
+        <pageFormat>
+                <noCols>$1</noCols>
+                <colItems>$2</colItems>
+        </pageFormat> 
+EOF
+}
+
+C4R16=/dev/shm/c4R16
+C4R8=/dev/shm/c4R8
+
+[ -e $C4R16 ] || cCrR 4 16 > $C4R16
+
+dump_k() {
+	(cd /dev/dsp1; 
+	/usr/local/bin/lscat m0* m1[0-6] c0* c1[0-6] m1[7-9] m[23]* c1[7-9] c[23]* )
+}
+
+dump_r() {
+	(cd /dev/dsp1; /usr/local/bin/lscat */* | grep -v ^[cm] )
+}
+
+ADDED_WEB=0
+
+add_web() {
+if [ -e /var/www/d-tacq/acq_main_page.html ]; then
+	grep -q $DEV /var/www/d-tacq/acq_main_page.html
+	if [ $? -ne 0 ]; then
+		sed -ie '/TABAPPEND/ {
+a       <li><a title="'$DEV'" href="acq_info_page.html">'$DEV'</a></li>
+a       <li><a title="'$DEVK'" href="acq_info_page.html">'$DEVK'</a></li>
+}' /var/www/d-tacq/acq_main_page.html
+	fi
+	ADDED_WEB=1
+fi
+}
+
+monitor() {
+	while [ 1 ]
+	do
+		[ $ADDED_WEB -eq 0 ] && add_web				
+		dump_r | fs2xml --kvp -o /dev/shm/$DEV.xml -s $C4R16
+#		dump_k | fs2xml --kvp -o /dev/shm/$DEVK.xml -s $C4R16
+		sleep 1		
+	done
+}
+
+if [ "$(basename $0)" = "monitor_dsp1" ]; then
+	if [ -d $DIR ]; then
+		monitor
+	else
+		echo ERROR: monitor dir not found: $DIR
+	fi
+fi
+
+
+

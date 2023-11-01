@@ -1,0 +1,104 @@
+#!/usr/local/bin/expect
+# load fir from file
+# SITE=N load.ffir [FILE]
+# load from FILE or stdin
+
+set SITE 	1
+set VERBOSE 	0
+set COEFFS 	{}
+
+
+if { [info exists ::env(VERBOSE) ] } {
+	set VERBOSE $::env(VERBOSE)
+}
+
+if { [info exists ::env(SITE) ] } {
+	set SITE $::env(SITE)
+}
+
+proc vprint {lvl txt} {
+	global VERBOSE
+	if {$VERBOSE > $lvl} {
+		puts $txt
+	}
+}
+
+proc readCoeffs {fp} {
+	global COEFFS
+	while { [gets $fp line] >= 0 } {
+	    if {[string first # $line] == 0} {
+	    	vprint 1 $line
+	    } else {
+		lappend COEFFS $line
+	    }
+	}
+}
+
+if { $::argc > 0 } {
+	set cfile [lindex $::argv 0]
+	if { $::argc == 1 && [file exists $cfile] } {
+		puts "site $SITE using file $cfile"
+		readCoeffs [open $cfile r]
+	} else {
+		puts "using args immediate $::argv"
+		set COEFFS $::argv
+	}
+} else {
+	puts "using stdin"
+	readCoeffs stdin
+}
+
+proc set_knob {knob value} {
+	global SITE
+	set kpath "/etc/acq400/$SITE/$knob"
+        vprint  1 "set_knob $kpath $value"
+	if {[catch {
+		set fp [open $kpath w]
+		puts $fp $value
+		close $fp
+	}] } {
+		puts stderr "ERROR writing $kpath"
+	}
+}
+
+proc get_knob {knob} {
+	global SITE
+	set fp [open "/etc/acq400/$SITE/$knob" r]
+	if { [gets $fp line] >= 0 } {
+		close $fp
+		return $line
+	} else {
+		exit 1
+	}
+}
+
+set_knob ffir_reset 1
+set ii 0
+set ctr [get_knob ffir_counter]
+
+foreach coeff $COEFFS {
+	vprint 2 "$ii $coeff"
+	set_knob ffir_coeff $coeff
+	incr ii
+	set ctr [get_knob ffir_counter]
+	if { $ctr == 0 } {
+		vprint 1 "Completed at $ii out of $#COEFFS"
+		exit 0
+	} else {
+		if { $ctr != $ii } {
+			puts "ERROR counter $ctr expected $ii"
+			exit 1
+		}
+	}
+}
+
+set ipad 0
+
+while { $ctr != 0 } {
+	set_knob ffir_coeff 0
+	set ctr [get_knob ffir_counter]
+	incr ipad
+	incr ii
+}
+
+vprint 1 "Completed at $ii out of [llength $COEFFS] with ipad $ipad"
