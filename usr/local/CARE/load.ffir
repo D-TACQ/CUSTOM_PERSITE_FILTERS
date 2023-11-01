@@ -76,15 +76,21 @@ set_knob ffir_reset 1
 set_knob ffir_reset 0
 set ii 0
 set ctr [get_knob ffir_counter]
+set cmax 0
+set complete 0
 
 foreach coeff $COEFFS {
 	vprint 2 "$ii $coeff"
 	set_knob ffir_coeff $coeff
 	incr ii
 	set ctr [get_knob ffir_counter]
+	if { $ctr > $cmax } {
+		set cmax $ctr
+	}
 	if { $ctr == 0 } {
-		vprint 1 "Completed at $ii out of $#COEFFS"
-		exit 0
+		vprint 1 "Completed at $ii out of [llength $COEFFS]"
+		set complete 1
+		break
 	} else {
 		if { $ctr != $ii } {
 			puts "ERROR counter $ctr expected $ii"
@@ -95,11 +101,13 @@ foreach coeff $COEFFS {
 
 set ipad 0
 
-while { $ctr != 0 } {
-	set_knob ffir_coeff 0
-	set ctr [get_knob ffir_counter]
-	incr ipad
-	incr ii
+if { ! $complete } {
+	while { $ctr != 0 } {
+		set_knob ffir_coeff 0
+		set ctr [get_knob ffir_counter]
+		incr ipad
+		incr ii
+	}
 }
 
-vprint 1 "Completed at $ii out of [llength $COEFFS] with ipad $ipad"
+vprint 1 "Completed at $ii out of [llength $COEFFS] with ipad $ipad max ctr $cmax"
