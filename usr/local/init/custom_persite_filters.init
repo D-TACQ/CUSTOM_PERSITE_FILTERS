@@ -22,7 +22,7 @@ for SITE in 1 2 3 4 5 6; do
 done
 
 
-/usr/local/bin/monitor_dsp1 2>&1 >/dev/null  &
+/usr/local/CARE/CUSTOM_PERSITE_FILTERS/monitor_dsp1 2>&1 >/dev/null  &
 
 echo "DSP site 14 active on 4234"
 

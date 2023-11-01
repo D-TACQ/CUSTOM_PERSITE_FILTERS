@@ -1,10 +1,10 @@
 #!/bin/sh
 
-DEVK=PERSITE_FILTERS
 DIR=/dev/dsp1/
 
-#httpd doesn't like names with periods..
-XMLNAME=$DEV
+GLOBS=FILTER_COMMON
+SITES=FILTER_SITES
+
 
 cCrR() {
 cat - <<EOF
@@ -15,19 +15,28 @@ cat - <<EOF
 EOF
 }
 
-C4R16=/dev/shm/c4R16
-C4R8=/dev/shm/c4R8
+C1R10=/dev/shm/c1R10
+C6R7=/dev/shm/c6R7
 
-[ -e $C4R16 ] || cCrR 4 16 > $C4R16
+[ -e $C1R10 ] || cCrR 1 19 > $C1R10
+[ -e $C6R7 ]  || cCrR 6 7 > $C6R7
 
 dump_k() {
 	(cd /dev/dsp1; 
-	/usr/local/bin/lscat m0* m1[0-6] c0* c1[0-6] m1[7-9] m[23]* c1[7-9] c[23]* )
+	for file in $(find . -type f -print -maxdepth 1); do
+		[ "$file" != "./.create" ] && echo $file $(cat $file)
+	done
+	)
 }
 
-dump_r() {
-	(cd /dev/dsp1; /usr/local/bin/lscat */* | grep -v ^[cm] )
-}
+dump_r() { (
+	cd /dev/dsp1; 
+	for file in [1-6]/*; do
+		echo $file $(cat $file)
+	done
+	echo ..
+	echo ..
+) }
 
 ADDED_WEB=0
 
@@ -36,8 +45,8 @@ if [ -e /var/www/d-tacq/acq_main_page.html ]; then
 	grep -q $DEV /var/www/d-tacq/acq_main_page.html
 	if [ $? -ne 0 ]; then
 		sed -ie '/TABAPPEND/ {
-a       <li><a title="'$DEV'" href="acq_info_page.html">'$DEV'</a></li>
-a       <li><a title="'$DEVK'" href="acq_info_page.html">'$DEVK'</a></li>
+a       <li><a title="'$GLOBS'" href="acq_info_page.html">'$GLOBS'</a></li>
+a       <li><a title="'$SITES'" href="acq_info_page.html">'$SITES'</a></li>
 }' /var/www/d-tacq/acq_main_page.html
 	fi
 	ADDED_WEB=1
@@ -48,8 +57,8 @@ monitor() {
 	while [ 1 ]
 	do
 		[ $ADDED_WEB -eq 0 ] && add_web				
-		dump_r | fs2xml --kvp -o /dev/shm/$DEV.xml -s $C4R16
-#		dump_k | fs2xml --kvp -o /dev/shm/$DEVK.xml -s $C4R16
+		dump_k | fs2xml --kvp -o /dev/shm/$GLOBS.xml -s $C1R10
+		dump_r | fs2xml --kvp -o /dev/shm/$SITES.xml -s $C6R7
 		sleep 1		
 	done
 }
