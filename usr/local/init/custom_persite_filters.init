@@ -17,6 +17,7 @@ for SITE in 1 2 3 4 5 6; do
 				[ -e $KDIR/$(basename $knob) ] && rm $KDIR/$(basename $knob)
 				ln -s $knob $KDIR
 			done
+			ln -s /usr/local/CARE/load.ffir $KDIR
 		fi
 	fi
 done

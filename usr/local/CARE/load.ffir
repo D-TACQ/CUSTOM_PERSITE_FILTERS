@@ -73,6 +73,7 @@ proc get_knob {knob} {
 }
 
 set_knob ffir_reset 1
+set_knob ffir_reset 0
 set ii 0
 set ctr [get_knob ffir_counter]
 
