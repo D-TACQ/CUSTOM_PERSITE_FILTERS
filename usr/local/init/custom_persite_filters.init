@@ -25,5 +25,8 @@ done
 
 /usr/local/CARE/CUSTOM_PERSITE_FILTERS/monitor_dsp1 2>&1 >/dev/null  &
 
+echo "reset_then_enable_dsp"
+/usr/local/CARE/CUSTOM_PERSITE_FILTERS/reset_then_enable_dsp
+
 echo "DSP site 14 active on 4234"
 
