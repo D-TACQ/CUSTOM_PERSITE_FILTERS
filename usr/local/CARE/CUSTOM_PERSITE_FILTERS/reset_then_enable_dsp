@@ -1,7 +1,11 @@
 #!/bin/sh
 # Reset and Enable the DSP module
+echo reset_then_enable_dsp
+get.site 14 CTRL
+set.site 14 CTRL.MOD_EN    1
 set.site 14 CTRL.DSP_RESET 1
 set.site 14 CTRL.EN 1
 set.site 14 CTRL.AUTO_RESET 1
 set.site 14 CTRL.DSP_RESET 0
+get.site 14 CTRL
 
