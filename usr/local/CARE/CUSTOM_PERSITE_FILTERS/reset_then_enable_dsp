@@ -1,11 +1,11 @@
 #!/bin/sh
 # Reset and Enable the DSP module
-echo reset_then_enable_dsp
-get.site 14 CTRL
-set.site 14 CTRL.MOD_EN    1
-set.site 14 CTRL.DSP_RESET 1
-set.site 14 CTRL.EN 1
-set.site 14 CTRL.AUTO_RESET 1
-set.site 14 CTRL.DSP_RESET 0
-get.site 14 CTRL
+cd /dev/dsp1
+echo reset_then_enable_dsp before $(cat CTRL)
+echo >CTRL.MOD_EN    1
+echo >CTRL.DSP_RESET 1
+echo >CTRL.EN 1
+echo >CTRL.AUTO_RESET 1
+echo >CTRL.DSP_RESET 0
+echo reset_then_enable_dsp after $(cat CTRL)
 
