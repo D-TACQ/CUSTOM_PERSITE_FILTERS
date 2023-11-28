@@ -28,4 +28,10 @@ Possible to run off the command line with debugs:
     Completed at 14 out of 18 with ipad 0 max ctr 13
 
 
+To rebuild this package
+git-clone https://github.com/D-TACQ/CUSTOM_PERSITE_FILTERS.git
+make your local changes,
+run ./make.package
+
+Please report any change you want preserved with an emailed diff or a Pull Request.
 
