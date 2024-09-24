@@ -14,6 +14,11 @@ cp README opkg/usr/local/init/$PKG.README
 
 tar cvzf release/${SEQ}-${PKG}-${DC}.tgz -C opkg .
 ls -l release/${SEQ}-${PKG}-${DC}.tgz
-rm -f ${PACKAGES}/${SEQ}-${PKG}*
-cp release/${SEQ}-${PKG}-${DC}.tgz ${PACKAGES}
+if [ -d $PACKAGES ]; then
+	copy to $PACKAGES
+	rm -f ${PACKAGES}/${SEQ}-${PKG}*
+	cp release/${SEQ}-${PKG}-${DC}.tgz ${PACKAGES}
+else
+	echo out of tree release done
+fi
 
